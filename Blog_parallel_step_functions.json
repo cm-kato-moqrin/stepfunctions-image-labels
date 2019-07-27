@@ -1,0 +1,39 @@
+{
+  "Comment": "Coordinate tasks for image analysis",
+  "StartAt": "ImageAnalysis",
+  "States": {
+    "ImageAnalysis": {
+      "Type": "Parallel",
+      "Next": "PutDynamo",
+      "Branches": [
+        {
+          "StartAt": "ImageExtractMetaData",
+          "States": {
+            "ImageExtractMetaData": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-1:984917567632:function:GetS3Metadata",
+              "OutputPath": "$",
+              "End": true
+            }
+          }
+        },
+        {
+          "StartAt": "ImageLabeling",
+          "States": {
+            "ImageLabeling": {
+              "Type": "Task",
+              "Resource": "arn:aws:lambda:ap-northeast-1:984917567632:function:GetImageLabels",
+              "OutputPath": "$",
+              "End": true
+            }
+          }
+        }
+      ]
+    },
+      "PutDynamo": {
+        "Type": "Task",
+        "Resource": "arn:aws:lambda:ap-northeast-1:984917567632:function:putDynamo",
+        "End": true
+      }
+    }
+  }
